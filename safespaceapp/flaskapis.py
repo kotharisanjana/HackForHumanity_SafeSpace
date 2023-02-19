@@ -18,10 +18,10 @@ def computeClusterInfo(df):
     # Find diameter of every cluster
     labels = cluster_info['clusterId'].unique()
     for label in labels:
-        temp = cluster_info[cluster_info.clusterId == label]
-        coordinates = temp[['centroidLat', 'centroidLong']].to_numpy()
+        temp = df[df.clusterId == label]
+        coordinates = temp[['latitude', 'longitude']].to_numpy()
         result = haversine_distances(coordinates)
-        result = result*6371
+        result = result*6371.0088
         diameter = max([max(x) for x in result])
         idx = cluster_info[cluster_info.clusterId == label].index.values.astype(int)[0]
         cluster_info.loc[idx, 'radius'] = diameter/2
@@ -37,12 +37,11 @@ def getClusters():
 
         df = pd.DataFrame(coordinates)
         df = df.iloc[:, 1:-1]
-        df = np.radians(df)
 
         kms_per_radian = 6371.0088
-        epsilon = 0.1/kms_per_radian
+        epsilon = 0.15/kms_per_radian
         min_samples = 1
-        dbscan = DBSCAN(eps=epsilon, min_samples=min_samples, algorithm='ball_tree', metric='haversine').fit(df)
+        dbscan = DBSCAN(eps=epsilon, min_samples=min_samples, algorithm='ball_tree', metric='haversine').fit(np.radians(df))
         df['clusterId'] = dbscan.labels_
         df['clusterId'] = df['clusterId'].apply(str)
 
