@@ -61,7 +61,7 @@ def getNearbyOpenPlaces():
             radius = 1000
             open_now = True
             # Add in config file
-            api_key = 'AIzaSyCVTSwLXsgH-84isnXT6j0-clRiJBSjRR0'
+            api_key = ''
 
             url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{long}&radius={radius}&open_now={open_now}&key={api_key}".format(lat=lat, long=long, radius=radius, open_now=open_now, api_key=api_key)
             response = requests.get(url)
